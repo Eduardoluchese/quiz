@@ -697,21 +697,27 @@
   /*************************************************************
    * 3) FUNÇÃO PARA ENVIAR OS DADOS PARA O WEBHOOK
    *************************************************************/
-  async function sendAnalytics() {
+async function sendAnalytics() {
     try {
-      // Montamos um array pois o Apps Script costuma processar listas de sessões
       const dataToSend = [ quizAnalytics ];
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(dataToSend));
 
-      await fetch(ANALYTICS_CONFIG.webhookUrl, {
+      const response = await fetch(ANALYTICS_CONFIG.webhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          'data': JSON.stringify(dataToSend)
-        })
+        mode: 'no-cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: formData
       });
-      console.log("Analytics enviado com sucesso.");
+
+      console.log("Analytics enviado com sucesso");
+      return true;
     } catch (error) {
       console.error("Erro ao enviar analytics:", error);
+      return false;
     }
   }
 
