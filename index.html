@@ -670,7 +670,7 @@
   const ANALYTICS_CONFIG = {
     webhookUrl: "https://script.google.com/macros/s/AKfycbxN7tgbmjtX0qWD8GhtD1AChGs2Uc0Z57vLr_1JALOs73YTk0-aKWvQfBu9dbEwVUNy/exec", // Substitua pela URL do seu Google Apps Script
     quizId: "quiz_" + Date.now(),
-    quizName: "Meu Quiz de Teste",
+    quizName: "Meu Quiz de Teste exportado",
     quizCategory: "Teste"
   };
 
@@ -1082,6 +1082,12 @@ function showSection(sectionId) {
     setupDelayedButtons(targetSection);
     animateProgressBars(targetSection);
     setupInputWidget(targetSection.querySelector('.input-widget'));
+
+        // Atualiza furthestSection se necessário
+      const indexNow = parseInt(sectionId.split('-')[1]) || 0;
+      const indexFurthest = parseInt(quizAnalytics.furthestSection.split('-')[1]) || 0;
+      if (indexNow > indexFurthest) {
+        quizAnalytics.furthestSection = sectionId;
   }
 }
 
@@ -1332,6 +1338,12 @@ document.addEventListener('DOMContentLoaded', function() {
         animateProgressBars(targetSection);
         setupInputWidget(targetSection.querySelector('.input-widget'));
         initializeGalleries(targetSection);
+
+            // Atualiza furthestSection se necessário
+      const indexNow = parseInt(sectionId.split('-')[1]) || 0;
+      const indexFurthest = parseInt(quizAnalytics.furthestSection.split('-')[1]) || 0;
+      if (indexNow > indexFurthest) {
+        quizAnalytics.furthestSection = sectionId;
       }
     }
 
