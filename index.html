@@ -731,6 +731,7 @@ window.addEventListener("beforeunload", () => {
   navigator.sendBeacon(ANALYTICS_CONFIG.webhookUrl, blob);
 });
 
+      
 
  function setupDelayedButtons(section) {
   const buttons = section.querySelectorAll('.mobile-button[data-delay]');
@@ -799,8 +800,27 @@ function showSection(sectionId) {
       }
     }
   }
+// armazena repostas ao clicar no botao
+  document.querySelectorAll('.option-button').forEach(function(button) {
+    button.addEventListener('click', function() {
+      const question = this.closest('.mobile-multiple-choice').getAttribute('data-question') || "Pergunta";
+      const answer = this.getAttribute('data-answer') || "Resposta";
+      quizAnalytics.responses[question] = answer;
+    });
+  });
 
+  // Registrar informações do usuário quando o botão de continuação é clicado
+  document.querySelectorAll('.input-widget .continue-button').forEach(function(button) {
+    button.addEventListener('click', function() {
+      const nomeInput = this.closest('.input-widget').querySelector('input[name="nome"]');
+      const emailInput = this.closest('.input-widget').querySelector('input[name="email"]');
+      const whatsappInput = this.closest('.input-widget').querySelector('input[name="whatsapp"]');
 
+      if (nomeInput) quizAnalytics.nome = nomeInput.value.trim();
+      if (emailInput) quizAnalytics.email = emailInput.value.trim();
+      if (whatsappInput) quizAnalytics.whatsapp = whatsappInput.value.trim();
+    });
+  });
 
     function handleProgressCompletion(progressElement) {
       const enableRedirect = progressElement.getAttribute('data-enable-redirect') === 'true';
