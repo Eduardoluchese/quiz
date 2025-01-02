@@ -699,27 +699,27 @@
    *************************************************************/
 async function sendAnalytics() {
     try {
-      const dataToSend = [ quizAnalytics ];
-      const formData = new FormData();
-      formData.append('data', JSON.stringify(dataToSend));
+        const formData = new FormData();
+        const dataToSend = [quizAnalytics];
+        formData.append('data', JSON.stringify(dataToSend));
+        
+        await fetch(ANALYTICS_CONFIG.webhookUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: formData
+        });
 
-      const response = await fetch(ANALYTICS_CONFIG.webhookUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: formData
-      });
-
-      console.log("Analytics enviado com sucesso");
-      return true;
+        console.log("Analytics enviado com sucesso");
+        return true;
     } catch (error) {
-      console.error("Erro ao enviar analytics:", error);
-      return false;
+        console.error("Erro ao enviar analytics:", error);
+        return false;
     }
-  }
+}
 
   /*************************************************************
    * 4) QUANDO SAIR DA PÁGINA (beforeunload), ENVIA DADOS
