@@ -1155,7 +1155,6 @@ function setupInputWidget(widget) {
     }
   });
 }
-
 function interpolateVariables(section) {
   const textNodes = Array.from(section.getElementsByTagName('*'))
     .filter(el => !el.children.length && el.textContent.includes('{{'))
@@ -1167,13 +1166,15 @@ function interpolateVariables(section) {
     
     matches.forEach(match => {
       const variable = match.slice(2, -2).trim();
-      const value = userVariables[variable] || '';
+      const value = userVariables[variable] || quizAnalytics[variable] || '';
       text = text.replace(match, value);
     });
 
     element.textContent = text;
   });
 }
+
+
 
 function showSection(sectionId) {
   const sections = document.querySelectorAll('.quiz-section');
