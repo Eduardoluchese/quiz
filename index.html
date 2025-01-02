@@ -722,23 +722,28 @@
   /*************************************************************
    * 3) FUNÇÃO PARA ENVIAR OS DADOS PARA O WEBHOOK
    *************************************************************/
-  async function sendAnalytics() {
-    try {
-      // Montamos um array pois o Apps Script costuma processar listas de sessões
-      const dataToSend = [ quizAnalytics ];
+async function sendAnalytics() {
+  try {
+    // Sincronizar userVariables com quizAnalytics
+    quizAnalytics.nome = userVariables.nome || "";
+    quizAnalytics.email = userVariables.email || "";
+    quizAnalytics.whatsapp = userVariables.whatsapp || "";
 
-      await fetch(ANALYTICS_CONFIG.webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          'data': JSON.stringify(dataToSend)
-        })
-      });
-      console.log("Analytics enviado com sucesso.");
-    } catch (error) {
-      console.error("Erro ao enviar analytics:", error);
-    }
+    const dataToSend = [ quizAnalytics ];
+
+    await fetch(ANALYTICS_CONFIG.webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        'data': JSON.stringify(dataToSend)
+      })
+    });
+    console.log("Analytics enviado com sucesso.");
+  } catch (error) {
+    console.error("Erro ao enviar analytics:", error);
   }
+}
+
 
       /*************************************************************
        * 4) QUANDO SAIR DA PÁGINA (beforeunload), ENVIA DADOS
