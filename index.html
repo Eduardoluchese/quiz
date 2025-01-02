@@ -835,6 +835,8 @@ function showSection(sectionId) {
     buttons.forEach(button => {
       button.style.opacity = '0';
       button.style.transition = 'none';
+          fetchUserCity();
+
     });
   });
 
@@ -1412,6 +1414,8 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         });
         section.classList.remove('active');
+            fetchUserCity();
+
       });
       
       const targetSection = document.getElementById(sectionId);
