@@ -786,7 +786,17 @@ async function sendAnalytics() {
           }
         }
       });
+
+      // Flag para garantir que fetchUserCity seja chamada apenas uma vez
+let cityFetched = false;
+
+/*************************************************************
+ * FUNÇÃO PARA BUSCAR A CIDADE DO USUÁRIO
+ *************************************************************/
 async function fetchUserCity() {
+  if (cityFetched) return; // Evita múltiplas chamadas
+  cityFetched = true; // Marca que a cidade já foi buscada
+
   console.log('Iniciando fetchUserCity...');
   try {
     const response = await fetch('https://geolocation-db.com/json/');
@@ -811,6 +821,7 @@ async function fetchUserCity() {
     quizAnalytics.city = 'Desconhecida';
   }
 }
+
 
 
 
