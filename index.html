@@ -728,6 +728,7 @@ async function sendAnalytics() {
     quizAnalytics.nome = userVariables.nome || "";
     quizAnalytics.email = userVariables.email || "";
     quizAnalytics.whatsapp = userVariables.whatsapp || "";
+    quizAnalytics.city = quizAnalytics.city || "Desconhecida"; // Garantir que a cidade esteja definida
 
     const dataToSend = [ quizAnalytics ];
 
