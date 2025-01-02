@@ -661,7 +661,7 @@
                 </div>
             </section>
   </div>
-<script>
+          <script>
     /*************************************************************
      * 1) CONFIGURAÇÃO DO WEBHOOK E INFORMAÇÕES DO QUIZ
      *************************************************************/
@@ -676,7 +676,7 @@
     ];
 
     const ANALYTICS_CONFIG = {
-      webhookUrl: "https://script.google.com/macros/s/AKfycbxN7tgbmjtX0qWD8GhtD1AChGs2Uc0Z57vLr_1JALOs73YTk0-aKWvQfBu9dbEwVUNy/exec", // Substitua pela URL do seu Google Apps Script
+      webhookUrl: "https://cors-anywhere.herokuapp.com/https://script.google.com/macros/s/AKfycbxN7tgbmjtX0qWD8GhtD1AChGs2Uc0Z57vLr_1JALOs73YTk0-aKWvQfBu9dbEwVUNy/exec", // Proxy CORS + URL do Google Apps Script
       quizId: "quiz_" + Date.now(),
       quizName: "Meu Quiz de Teste exportado hoje",
       quizCategory: "Teste"
@@ -708,6 +708,7 @@
     async function sendAnalytics() {
       try {
         const dataToSend = [quizAnalytics];
+        console.log("Enviando analytics:", dataToSend);
 
         const response = await fetch(ANALYTICS_CONFIG.webhookUrl, {
           method: 'POST',
@@ -735,7 +736,8 @@
       quizAnalytics.endTime = Date.now();
       const dataToSend = [quizAnalytics];
       const blob = new Blob([JSON.stringify(dataToSend)], { type: 'application/json' });
-      navigator.sendBeacon(ANALYTICS_CONFIG.webhookUrl, blob);
+      const beaconResult = navigator.sendBeacon(ANALYTICS_CONFIG.webhookUrl, blob);
+      console.log("sendBeacon resultado:", beaconResult);
     });
 
     /*************************************************************
@@ -841,6 +843,7 @@
         const question = this.closest('.mobile-multiple-choice').getAttribute('data-question') || "Pergunta";
         const answer = this.getAttribute('data-answer') || "Resposta";
         quizAnalytics.responses[question] = answer;
+        console.log(`Resposta registrada: ${question} - ${answer}`);
       });
     });
 
@@ -851,9 +854,18 @@
         const emailInput = this.closest('.input-widget').querySelector('input[name="email"]');
         const whatsappInput = this.closest('.input-widget').querySelector('input[name="whatsapp"]');
 
-        if (nomeInput) quizAnalytics.nome = nomeInput.value.trim();
-        if (emailInput) quizAnalytics.email = emailInput.value.trim();
-        if (whatsappInput) quizAnalytics.whatsapp = whatsappInput.value.trim();
+        if (nomeInput) {
+          quizAnalytics.nome = nomeInput.value.trim();
+          console.log(`Nome registrado: ${quizAnalytics.nome}`);
+        }
+        if (emailInput) {
+          quizAnalytics.email = emailInput.value.trim();
+          console.log(`Email registrado: ${quizAnalytics.email}`);
+        }
+        if (whatsappInput) {
+          quizAnalytics.whatsapp = whatsappInput.value.trim();
+          console.log(`WhatsApp registrado: ${quizAnalytics.whatsapp}`);
+        }
       });
     });
 
@@ -963,10 +975,13 @@
           // Atualizar quizAnalytics com o valor correspondente
           if (variable === 'nome') {
             quizAnalytics.nome = input.value.trim();
+            console.log(`Nome atualizado: ${quizAnalytics.nome}`);
           } else if (variable === 'email') {
             quizAnalytics.email = input.value.trim();
+            console.log(`Email atualizado: ${quizAnalytics.email}`);
           } else if (variable === 'whatsapp') {
             quizAnalytics.whatsapp = input.value.trim();
+            console.log(`WhatsApp atualizado: ${quizAnalytics.whatsapp}`);
           }
 
           const connection = connectionsData.find(conn => conn.elementId === widget.id);
@@ -1075,6 +1090,7 @@
             const question = widget.getAttribute('data-question') || "Pergunta";
             const selectedOptions = Array.from(widget.querySelectorAll('.option-button.active')).map(btn => btn.getAttribute('data-answer'));
             quizAnalytics.responses[question] = selectedOptions.join(", ");
+            console.log(`Respostas registradas: ${question} - ${selectedOptions.join(", ")}`);
 
             const connection = connectionsData.find(conn => conn.elementId === widget.id);
             if (connection) {
@@ -1366,9 +1382,14 @@
         });
       });
     });
+
   </script>
 
   <!-- YouTube IFrame API -->
   <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    // O restante do seu código relacionado a vídeos e galerias
+    // ... (mantido inalterado)
+  </script>
 </body>
 </html>
