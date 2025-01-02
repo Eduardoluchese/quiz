@@ -724,10 +724,13 @@ async function sendAnalytics() {
   /*************************************************************
    * 4) QUANDO SAIR DA PÁGINA (beforeunload), ENVIA DADOS
    *************************************************************/
-  window.addEventListener("beforeunload", () => {
-    quizAnalytics.endTime = Date.now();
-    sendAnalytics();
-  });
+window.addEventListener("beforeunload", () => {
+  quizAnalytics.endTime = Date.now();
+  const dataToSend = [quizAnalytics];
+  const blob = new Blob([new URLSearchParams({ data: JSON.stringify(dataToSend) })], { type: 'application/x-www-form-urlencoded' });
+  navigator.sendBeacon(ANALYTICS_CONFIG.webhookUrl, blob);
+});
+
 
  function setupDelayedButtons(section) {
   const buttons = section.querySelectorAll('.mobile-button[data-delay]');
