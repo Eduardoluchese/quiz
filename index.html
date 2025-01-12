@@ -10,14 +10,24 @@
       let conditions = [];
       let debug = {};
 
-      // Verificação de idioma
-      const userLanguage = navigator.language.split('-')[0];
-      const languageCondition = ["pt"].includes(userLanguage);
-      conditions.push(languageCondition);
-      debug.language = {
-          detected: userLanguage,
-          allowed: ["pt"],
-          passed: languageCondition
+      // Verificação de horário
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+      const currentTime = currentHour * 60 + currentMinute;
+      
+      const [startHour, startMinute] = "09:00".split(':').map(Number);
+      const [endHour, endMinute] = "18:00".split(':').map(Number);
+      
+      const startTimeMinutes = startHour * 60 + startMinute;
+      const endTimeMinutes = endHour * 60 + endMinute;
+      
+      const timeCondition = currentTime >= startTimeMinutes && currentTime <= endTimeMinutes;
+      conditions.push(timeCondition);
+      debug.time = {
+          current: `${currentHour}:${currentMinute}`,
+          allowed: `09:00-18:00`,
+          passed: timeCondition
       };
       // Verifica todas as condições
       const shouldRedirect = conditions.length > 0 ? conditions.every(condition => condition === true) : true;
