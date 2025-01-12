@@ -8,23 +8,23 @@
     <script>
     async function checkConditions() {
         let conditions = [];
+        let debug = {};
 
-        // Verificação de dispositivo
-        const userAgent = navigator.userAgent.toLowerCase();
-        const isMobile = /iphone|ipod|android|blackberry|opera mini|iemobile|wpdesktop/i.test(userAgent);
-        const isTablet = /(ipad|tablet|playbook|silk)|(android(?!.*mobile))/i.test(userAgent);
-        const isDesktop = !isMobile && !isTablet;
-        
-        const deviceType = isDesktop ? 'desktop' : (isTablet ? 'tablet' : 'mobile');
-        conditions.push({
-            name: 'dispositivo',
-            result: ["mobile"].includes(deviceType)
-        });
+        // Verificação de código na URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const codeCondition = code === '123';
+        conditions.push(codeCondition);
+        debug.urlCode = {
+            required: '123',
+            received: code,
+            passed: codeCondition
+        };
         // Verifica todas as condições
-        const shouldRedirect = conditions.length > 0 ? conditions.every(c => c.result) : true;
+        const shouldRedirect = conditions.length > 0 ? conditions.every(condition => condition === true) : true;
 
         // Log das verificações (para debug)
-        console.log('Verificações realizadas:', conditions);
+        console.log('Debug de verificações:', debug);
         console.log('Resultado final:', shouldRedirect ? 'Atende requisitos' : 'Não atende requisitos');
 
         // Realizar redirecionamento
