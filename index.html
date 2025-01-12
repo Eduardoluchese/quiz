@@ -17,7 +17,7 @@
       const currentTime = currentHour * 60 + currentMinute;
       
       const [startHour, startMinute] = "09:00".split(':').map(Number);
-      const [endHour, endMinute] = "18:00".split(':').map(Number);
+      const [endHour, endMinute] = "11:00".split(':').map(Number);
       
       const startTimeMinutes = startHour * 60 + startMinute;
       const endTimeMinutes = endHour * 60 + endMinute;
@@ -26,7 +26,7 @@
       conditions.push(timeCondition);
       debug.time = {
           current: `${currentHour}:${currentMinute}`,
-          allowed: `09:00-18:00`,
+          allowed: `09:00-11:00`,
           passed: timeCondition
       };
       // Verifica todas as condições
