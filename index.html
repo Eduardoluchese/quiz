@@ -10,22 +10,15 @@
         let conditions = [];
         let debug = {};
 
-  // Verificação de país
-  try {
-      const response = await fetch('https://ipapi.co/json/');
-      const data = await response.json();
-      const countryCondition = ["BR"].includes(data.country_code);
-      conditions.push(countryCondition);
-      debug.country = {
-          detected: data.country_code,
-          allowed: ["BR"],
-          passed: countryCondition
-      };
-  } catch (error) {
-      console.error('Erro ao verificar país:', error);
-      conditions.push(false);
-      debug.country = {error: 'Falha na verificação'};
-  }
+        // Verificação de idioma
+        const userLanguage = navigator.language.split('-')[0];
+        const languageCondition = ["en"].includes(userLanguage);
+        conditions.push(languageCondition);
+        debug.language = {
+            detected: userLanguage,
+            allowed: ["en"],
+            passed: languageCondition
+        };
         // Verifica todas as condições
         const shouldRedirect = conditions.length > 0 ? conditions.every(condition => condition === true) : true;
 
