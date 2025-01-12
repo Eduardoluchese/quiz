@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Redirecionamento</title>
+  <meta charset="UTF-8">
+  <title>Redirecionamento</title>
 </head>
 <body>
-    <script>
-    async function checkConditions() {
-        let conditions = [];
-        let debug = {};
+  <script>
+  async function checkConditions() {
+      let conditions = [];
+      let debug = {};
 
-        // Verificação de idioma
-        const userLanguage = navigator.language.split('-')[0];
-        const languageCondition = ["en"].includes(userLanguage);
-        conditions.push(languageCondition);
-        debug.language = {
-            detected: userLanguage,
-            allowed: ["en"],
-            passed: languageCondition
-        };
-        // Verifica todas as condições
-        const shouldRedirect = conditions.length > 0 ? conditions.every(condition => condition === true) : true;
+      // Verificação de idioma
+      const userLanguage = navigator.language.split('-')[0];
+      const languageCondition = ["pt"].includes(userLanguage);
+      conditions.push(languageCondition);
+      debug.language = {
+          detected: userLanguage,
+          allowed: ["pt"],
+          passed: languageCondition
+      };
+      // Verifica todas as condições
+      const shouldRedirect = conditions.length > 0 ? conditions.every(condition => condition === true) : true;
 
-        // Log das verificações (para debug)
-        console.log('Debug de verificações:', debug);
-        console.log('Resultado final:', shouldRedirect ? 'Atende requisitos' : 'Não atende requisitos');
+      // Log das verificações (para debug)
+      console.log('Debug de verificações:', debug);
+      console.log('Resultado final:', shouldRedirect ? 'Atende requisitos' : 'Não atende requisitos');
 
-        // Realizar redirecionamento
-        window.location.href = shouldRedirect ? 'https://google.com' : 'https://chatgpt.com';
-    }
+      // Realizar redirecionamento
+      window.location.href = shouldRedirect ? 'https://google.com' : 'https://chatgpt.com';
+  }
 
-    // Executa as verificações
-    checkConditions();
-    </script>
+  // Executa as verificações
+  checkConditions();
+  </script>
 </body>
 </html>
