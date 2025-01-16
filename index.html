@@ -2,45 +2,116 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Redirecionamento</title>
+  <title>Verificação de Acesso</title>
+  <style>
+      #conteudoProtegido, #conteudoBloqueado {
+          display: none;
+      }
+      .protecao-copia {
+          user-select: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+      }
+  </style>
 </head>
-<body>
+<body class="protecao-copia">
+  <div id="conteudoProtegido"></div>
+  <div id="conteudoBloqueado"></div>
+
   <script>
   async function checkConditions() {
+      const targetUrl = "aHR0cHMlM0ElMkYlMkZnb29nbGUuY29t";
+      const defaultUrl = "aHR0cHMlM0ElMkYlMkZjaGF0Z3B0LmNvbQ==";
+      const targetAction = "show";
+      const defaultAction = "show";
+
       let conditions = [];
       let debug = {};
 
-      // Verificação de horário
-      const now = new Date();
-      const currentHour = now.getHours();
-      const currentMinute = now.getMinutes();
-      const currentTime = currentHour * 60 + currentMinute;
-      
-      const [startHour, startMinute] = "09:00".split(':').map(Number);
-      const [endHour, endMinute] = "11:00".split(':').map(Number);
-      
-      const startTimeMinutes = startHour * 60 + startMinute;
-      const endTimeMinutes = endHour * 60 + endMinute;
-      
-      const timeCondition = currentTime >= startTimeMinutes && currentTime <= endTimeMinutes;
-      conditions.push(timeCondition);
-      debug.time = {
-          current: `${currentHour}:${currentMinute}`,
-          allowed: `09:00-11:00`,
-          passed: timeCondition
-      };
-      // Verifica todas as condições
-      const shouldRedirect = conditions.length > 0 ? conditions.every(condition => condition === true) : true;
+      const hasAccess = localStorage.getItem('accessGranted');
+      if(hasAccess === 'true') {
+          handleAccess(true);
+          return;
+      }
+      async function loadContent(url, action) {
+          if(action === 'redirect') {
+              window.location.href = decodeURIComponent(atob(url));
+              return;
+          }
 
-      // Log das verificações (para debug)
-      console.log('Debug de verificações:', debug);
-      console.log('Resultado final:', shouldRedirect ? 'Atende requisitos' : 'Não atende requisitos');
+          try {
+              const response = await fetch(decodeURIComponent(atob(url)));
+              const html = await response.text();
+              return html;
+          } catch (error) {
+              console.error('Erro ao carregar conteúdo:', error);
+              return 'Erro ao carregar conteúdo';
+          }
+      }
 
-      // Realizar redirecionamento
-      window.location.href = shouldRedirect ? 'https://google.com' : 'https://chatgpt.com';
+      async function handleAccess(allowed) {
+          if(window.history.replaceState) {
+              const cleanUrl = window.location.href.replace(/\?code=[^&]*(&|$)/, '');
+              window.history.replaceState({}, document.title, cleanUrl);
+          }
+
+          if(allowed) {
+              localStorage.setItem('accessGranted', 'true');
+              if(targetAction === 'show') {
+                  const content = await loadContent(targetUrl, 'show');
+                  document.getElementById('conteudoProtegido').innerHTML = content;
+                  document.getElementById('conteudoProtegido').style.display = 'block';
+                  
+                  // Adiciona proteções extras
+                  document.addEventListener('contextmenu', e => e.preventDefault());
+                  document.addEventListener('keydown', e => {
+                      if(e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'u' || e.key === 'U')) {
+                          e.preventDefault();
+                      }
+                  });
+              } else {
+                  await loadContent(targetUrl, 'redirect');
+              }
+          } else {
+              if(defaultAction === 'show') {
+                  const content = await loadContent(defaultUrl, 'show');
+                  document.getElementById('conteudoBloqueado').innerHTML = content;
+                  document.getElementById('conteudoBloqueado').style.display = 'block';
+              } else {
+                  await loadContent(defaultUrl, 'redirect');
+              }
+          }
+      }
+
+      const shouldAllow = conditions.length > 0 ? conditions.every(condition => condition === true) : true;
+      console.log('Debug:', debug);
+      console.log('Acesso:', shouldAllow ? 'Permitido' : 'Negado');
+
+      await handleAccess(shouldAllow);
+      cleanup();
   }
 
-  // Executa as verificações
+  function cleanup() {
+      targetUrl = undefined;
+      defaultUrl = undefined;
+      handleAccess = undefined;
+      loadContent = undefined;
+      cleanup = undefined;
+      checkConditions = undefined;
+
+      const scripts = document.getElementsByTagName('script');
+      for(let script of scripts) {
+          if(script.textContent.includes('checkConditions')) {
+              script.remove();
+          }
+      }
+  }
+
+  window.addEventListener('beforeunload', () => {
+      localStorage.removeItem('accessGranted');
+  });
+
   checkConditions();
   </script>
 </body>
