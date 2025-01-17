@@ -4,12 +4,6 @@
   <meta charset="UTF-8">
   <title>Verificação de Acesso</title>
   <style>
-      /* Remover margens e paddings padrão */
-      html, body {
-          margin: 0;
-          padding: 0;
-          height: 100%;
-      }
       #conteudoProtegido, #conteudoBloqueado {
           display: none;
       }
@@ -27,8 +21,8 @@
 
   <script>
   async function checkConditions() {
-      const targetUrl = "aHR0cHMlM0ElMkYlMkZlZHVhcmRvbHVjaGVzZS5naXRodWIuaW8lMkZncmFuJTJG";
-      const defaultUrl = "aHR0cHMlM0ElMkYlMkZlZHVhcmRvbHVjaGVzZS5naXRodWIuaW8lMkZ0ZXJyYWNlJTJG";
+      const targetUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbQ==";
+      const defaultUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRm8tcXVlLXNpZ25pZmljYS1zb25oYXItY29tLXNhcG8taW50ZXJwcmV0YWNhby1lLXBvc3NpdmVpcy1zaWduaWZpY2Fkb3MlMkY=";
       const targetAction = "show";
       const defaultAction = "show";
 
@@ -42,6 +36,27 @@
       }
 
       const userAgent = navigator.userAgent.toLowerCase(); // Definido aqui para todas as verificações
+
+  
+      // Verificação de país
+      try {
+          const response = await fetch('https://ipapi.co/json/');
+          const data = await response.json();
+          const countryCondition = ["BR"].includes(data.country_code);
+          conditions.push(countryCondition);
+          debug.country = {
+              detected: data.country_code,
+              allowed: ["BR"],
+              passed: countryCondition
+          };
+      } catch (error) {
+          console.error('Erro ao verificar país:', error);
+          conditions.push(false);
+          debug.country = {
+              error: error.message,
+              passed: false
+          };
+      }
   
       // Verificação de código na URL
       const urlParams = new URLSearchParams(window.location.search);
@@ -64,7 +79,7 @@
           return `
               <iframe 
                   src="${decodedUrl}" 
-                  style="width: 100%; height: 100%; border: none;"
+                  style="width: 100%; height: 100vh; border: none;"
                   sandbox="allow-same-origin allow-scripts"
               ></iframe>
           `;
