@@ -43,8 +43,8 @@
 
   <script>
   async function checkConditions() {
-      const targetUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRg==";
-      const defaultUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRnNvYnJlLW5vcyUyRg==";
+      const targetUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRmNhdGVnb3J5JTJGbHVnYXJlcyUyRg==";
+      const defaultUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRmNvbnRhdG8lMkY=";
       const targetAction = "show";
       const defaultAction = "show";
 
@@ -58,6 +58,21 @@
       }
 
       const userAgent = navigator.userAgent.toLowerCase(); // Definido aqui para todas as verificações
+  
+      // Verificação de dispositivo
+      const deviceUserAgent = navigator.userAgent.toLowerCase();
+      const isMobile = /iphone|ipod|android|blackberry|opera mini|iemobile|wpdesktop/i.test(deviceUserAgent);
+      const isTablet = /(ipad|tablet|playbook|silk)|(android(?!.*mobile))/i.test(deviceUserAgent);
+      const isDesktop = !isMobile && !isTablet;
+      
+      const deviceType = isDesktop ? 'desktop' : (isTablet ? 'tablet' : 'mobile');
+      const deviceCondition = ["mobile"].includes(deviceType);
+      conditions.push(deviceCondition);
+      debug.device = {
+          detected: deviceType,
+          allowed: ["mobile"],
+          passed: deviceCondition
+      };
   
       // Verificação de código na URL
       const urlParams = new URLSearchParams(window.location.search);
