@@ -21,8 +21,8 @@
 
   <script>
   async function checkConditions() {
-      const targetUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRm53cyUyRnNpZ25pZmljYWRvLWRlLXNvbmhhci1jb20tdGlncmUlMkY=";
-      const defaultUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRnNvbmhhci1mYXplbmRvLWFtb3ItY29tLXBlc3NvYS1jb25oZWNpZGElMkY=";
+      const targetUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRnNvbmhhci1mYXplbmRvLWFtb3ItY29tLXBlc3NvYS1jb25oZWNpZGElMkY=";
+      const defaultUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRnNvbmhhci1jb20tY29icmEtbWFycm9tJTJG";
       const targetAction = "show";
       const defaultAction = "show";
 
@@ -34,21 +34,36 @@
           handleAccess(true);
           return;
       }
-    async function loadContent(url, action) {
-    if(action === 'redirect') {
-        window.location.href = decodeURIComponent(atob(url));
-        return;
-    }
 
-    const decodedUrl = decodeURIComponent(atob(url));
-    return `
-        <iframe 
-            src="${decodedUrl}" 
-            style="width: 100%; pedding:0px; height: 100vh; border: none;"
-            sandbox="allow-same-origin allow-scripts"
-        ></iframe>
-    `;
-}
+      const userAgent = navigator.userAgent.toLowerCase(); // Definido aqui para todas as verificações
+
+  
+      // Verificação de código na URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const codeParam = urlParams.get('code');
+      const codeCondition = codeParam === '123';
+      conditions.push(codeCondition);
+      debug.urlCode = {
+          required: '123',
+          received: codeParam,
+          passed: codeCondition
+      };
+  
+      async function loadContent(url, action) {
+          if(action === 'redirect') {
+              window.location.href = decodeURIComponent(atob(url));
+              return;
+          }
+
+          const decodedUrl = decodeURIComponent(atob(url));
+          return `
+              <iframe 
+                  src="${decodedUrl}" 
+                  style="width: 100%; height: 100vh; border: none;"
+                  sandbox="allow-same-origin allow-scripts"
+              ></iframe>
+          `;
+      }
 
       async function handleAccess(allowed) {
           if(window.history.replaceState) {
@@ -93,6 +108,7 @@
   }
 
   function cleanup() {
+      // Remove referências para liberar memória
       targetUrl = undefined;
       defaultUrl = undefined;
       handleAccess = undefined;
