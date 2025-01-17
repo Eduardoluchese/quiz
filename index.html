@@ -2,17 +2,38 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Tag viewport adicionada -->
   <title>Verificação de Acesso</title>
   <style>
+      /* Estilos Básicos */
+      body, html {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          height: 100%;
+      }
       #conteudoProtegido, #conteudoBloqueado {
           display: none;
+          width: 100%;
+          height: 100%;
       }
       .protecao-copia {
           user-select: none;
           -webkit-user-select: none;
           -moz-user-select: none;
           -ms-user-select: none;
-          margin: 0;
+      }
+      iframe {
+          width: 100%;
+          height: 100%;
+          border: none;
+      }
+
+      /* Estilos Responsivos */
+      @media (max-width: 768px) {
+          iframe {
+              height: 100%;
+          }
       }
   </style>
 </head>
@@ -22,8 +43,8 @@
 
   <script>
   async function checkConditions() {
-      const targetUrl = "aHR0cHMlM0ElMkYlMkZlZHVhcmRvbHVjaGVzZS5naXRodWIuaW8lMkZ0ZXJyYWNlJTJG";
-      const defaultUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRm8tcXVlLXNpZ25pZmljYS1zb25oYXItY29tLXNhcG8taW50ZXJwcmV0YWNhby1lLXBvc3NpdmVpcy1zaWduaWZpY2Fkb3MlMkY=";
+      const targetUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRg==";
+      const defaultUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRnNvYnJlLW5vcyUyRg==";
       const targetAction = "show";
       const defaultAction = "show";
 
@@ -37,7 +58,6 @@
       }
 
       const userAgent = navigator.userAgent.toLowerCase(); // Definido aqui para todas as verificações
-
   
       // Verificação de código na URL
       const urlParams = new URLSearchParams(window.location.search);
@@ -60,7 +80,7 @@
           return `
               <iframe 
                   src="${decodedUrl}" 
-                  style="width: 100%; height: 100vh; border: none;"
+                  style="width: 100%; height: 100%; border: none;"
                   sandbox="allow-same-origin allow-scripts"
               ></iframe>
           `;
