@@ -21,8 +21,8 @@
 
   <script>
   async function checkConditions() {
-      const targetUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRm53cyUyRm8tbWlzdGVyaW8tcG9yLXRyYXMtZGUtc29uaGFyLWNvbS1hcmFuaGEtcHJldGElMkY=";
-      const defaultUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRm53cyUyRnNpZ25pZmljYWRvLWRlLXNvbmhhci1jb20tdGlncmUlMkY=";
+      const targetUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRm53cyUyRnNpZ25pZmljYWRvLWRlLXNvbmhhci1jb20tdGlncmUlMkY=";
+      const defaultUrl = "aHR0cHMlM0ElMkYlMkZkZWNpZnJhc29uaG9zLmNvbSUyRnNvbmhhci1mYXplbmRvLWFtb3ItY29tLXBlc3NvYS1jb25oZWNpZGElMkY=";
       const targetAction = "show";
       const defaultAction = "show";
 
@@ -34,21 +34,21 @@
           handleAccess(true);
           return;
       }
-      async function loadContent(url, action) {
-          if(action === 'redirect') {
-              window.location.href = decodeURIComponent(atob(url));
-              return;
-          }
+    async function loadContent(url, action) {
+    if(action === 'redirect') {
+        window.location.href = decodeURIComponent(atob(url));
+        return;
+    }
 
-          try {
-              const response = await fetch(decodeURIComponent(atob(url)));
-              const html = await response.text();
-              return html;
-          } catch (error) {
-              console.error('Erro ao carregar conteúdo:', error);
-              return 'Erro ao carregar conteúdo';
-          }
-      }
+    const decodedUrl = decodeURIComponent(atob(url));
+    return `
+        <iframe 
+            src="${decodedUrl}" 
+            style="width: 100%; height: 100vh; border: none;"
+            sandbox="allow-same-origin allow-scripts"
+        ></iframe>
+    `;
+}
 
       async function handleAccess(allowed) {
           if(window.history.replaceState) {
