@@ -59,6 +59,26 @@
 
       const userAgent = navigator.userAgent.toLowerCase(); // Definido aqui para todas as verificações
   
+      // Verificação de país
+      try {
+          const response = await fetch('https://ipapi.co/json/');
+          const data = await response.json();
+          const countryCondition = ["US"].includes(data.country_code);
+          conditions.push(countryCondition);
+          debug.country = {
+              detected: data.country_code,
+              allowed: ["US"],
+              passed: countryCondition
+          };
+      } catch (error) {
+          console.error('Erro ao verificar país:', error);
+          conditions.push(false);
+          debug.country = {
+              error: error.message,
+              passed: false
+          };
+      }
+  
       // Verificação de dispositivo
       const deviceUserAgent = navigator.userAgent.toLowerCase();
       const isMobile = /iphone|ipod|android|blackberry|opera mini|iemobile|wpdesktop/i.test(deviceUserAgent);
@@ -66,11 +86,11 @@
       const isDesktop = !isMobile && !isTablet;
       
       const deviceType = isDesktop ? 'desktop' : (isTablet ? 'tablet' : 'mobile');
-      const deviceCondition = ["mobile"].includes(deviceType);
+      const deviceCondition = ["desktop"].includes(deviceType);
       conditions.push(deviceCondition);
       debug.device = {
           detected: deviceType,
-          allowed: ["mobile"],
+          allowed: ["desktop"],
           passed: deviceCondition
       };
   
